@@ -11,15 +11,15 @@ function load-go {
 # alias for gimme -l
 alias go-versions='gimme -l'
 
-# if gimme is not in ~/bin, download it
-if ! [ -e ~/bin/gimme ] ; then
+# download latest version of gimme
+install-gimme() {
   if ! [ -d ~/bin ] ; then
-    mkdir ~/bin
+    mkdir ~/bin || return 1
   fi
   curl -sL -o ~/bin/gimme https://raw.githubusercontent.com/travis-ci/gimme/master/gimme
-  chmod +x ~/bin/gimme
-fi
-
+  chmod +x ~/bin/gimme || return 1
+  return 0
+}
 
 # gimme completion
 __gimme_completion() {
