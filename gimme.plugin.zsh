@@ -20,12 +20,6 @@ if ! [ -e ~/bin/gimme ] ; then
   chmod +x ~/bin/gimme
 fi
 
-# Load either "latest.env" or "stable" version on startup
-if [ -e ~/.gimme/envs/latest.env ] ; then
-  source ~/.gimme/envs/latest.env &>/dev/null
-else
-  load-go &>/dev/null
-fi
 
 # gimme completion
 __gimme_completion() {
