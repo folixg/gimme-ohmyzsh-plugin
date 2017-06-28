@@ -30,6 +30,33 @@ install-gimme() {
   return 0
 }
 
+# remove go version from ~/.gimme/*
+remove-go() {
+  if [[ "$#" != 1 ]] ; then
+    echo "Usage: remove-go GO_VERSION"
+    return 0
+  else
+    if [ "$1" = "stable" ] ; then
+      if ! [ -e ~/.gimme/versions/stable ] ; then
+        echo "go version stable is not installed"
+        return 0
+      fi
+      version="$(cat ~/.gimme/versions/stable)" || return 1
+      rm ~/.gimme/versions/stable || return 1
+    else
+      version="$1"
+    fi
+    if ! [ $(ls ~/.gimme/versions | grep "$version") ] ; then
+      echo "go version $version is not installed"
+      return 0
+    else
+      rm -r ~/.gimme/versions/go"$version"* || return 1
+      rm ~/.gimme/envs/go"$version"* || return 1
+    fi
+    return 0
+  fi
+}
+
 # gimme completion
 __gimme_completion() {
   local version_1 version_2 version_3
@@ -57,7 +84,7 @@ __gimme_completion() {
   '(help force list stable tip '$version_1' '$version_2' \
     '$version_3')version[show the gimme version only and exit]'
     '(help version list)force[remove the existing go installation if present prior to install]'
-    '(help version force stable tip '$version_1' '$version_2' \ 
+    '(help version force stable tip '$version_1' '$version_2' \
     '$version_3')list[list installed go versions and exit]'
     )
       _values -w 'flags go_versions' ${flags[@]} ${go_versions[@]}
