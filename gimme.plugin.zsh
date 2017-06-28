@@ -1,11 +1,20 @@
-# Load a go version and/or source the versions environment.
+# Load a go version.
 # If no version is provided, 'stable' will be loaded.
-function load-go {
+load-go() {
+  # check if gimme is available (unfortunately eval does not return a non-zero
+  # value if the command is not found, therefore we need to check before)
+  gimme &>/dev/null
+  if [[ $? == 127 ]] ; then
+    echo "gimme was not found in your PATH.
+Run install-gimme and make sure to add ~/bin to your PATH."
+    return 1
+  fi
   if [[ "$#" == 0 ]] ; then
     eval "$(gimme stable)"
   else
     eval "$(gimme ${*})"
   fi
+  return $?
 }
 
 # alias for gimme -l
