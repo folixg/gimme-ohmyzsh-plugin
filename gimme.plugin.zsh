@@ -28,7 +28,7 @@ else
 fi
 
 # gimme completion
-function __gimme {
+__gimme_completion() {
   local version_1 version_2 version_3
   version_1="1.8.3"
   version_2="1.7.6"
@@ -60,4 +60,28 @@ function __gimme {
       _values -w 'flags go_versions' ${flags[@]} ${go_versions[@]}
       return
 }
-compdef __gimme gimme
+
+__load-go_completion() {
+  local version_1 version_2 version_3
+  version_1="1.8.3"
+  version_2="1.7.6"
+  version_3="1.6.4"
+  local context state state_descr line
+  typeset -a go_versions
+  go_versions+=(
+  '(tip '$version_1' '$version_2' '$version_3' \
+    )stable[latest stable go version]'
+  '(stable '$version_1' '$version_2' '$version_3' \
+    )tip[development version (master branch) of go]'
+  '(stable tip '$version_2' '$version_3' \
+    )'$version_1'[go version '$version_1']'
+  '(stable tip '$version_1' '$version_3' \
+    )'$version_2'[go version '$version_2']'
+  '(stable tip '$version_1' '$version_2' \
+    )'$version_3'[go version '$version_3']'
+  )
+  _values 'go_versions' ${go_versions[@]}
+}
+
+compdef __gimme_completion gimme
+compdef __load-go_completion load-go
